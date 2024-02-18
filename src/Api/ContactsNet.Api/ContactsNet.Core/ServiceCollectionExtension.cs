@@ -103,7 +103,6 @@ internal static class ServiceCollectionExtension
             swagger.SwaggerEndpoint("/swagger/v1/swagger.json", "ContactsNet API");
             swagger.RoutePrefix = string.Empty;
         });
-        app.UseHttpsRedirection();
         return app;
     }
 
