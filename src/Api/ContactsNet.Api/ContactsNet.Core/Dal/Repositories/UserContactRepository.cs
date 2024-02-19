@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using ContactsNet.Core.Dal.Entities;
 using ContactsNet.Core.Dal.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -40,5 +41,10 @@ internal class UserContactRepository : IUserContactRepository
     {
         _dbContext.Users.Remove(user);
         await _dbContext.SaveChangesAsync();
+    }
+    
+    public async Task<UserContact?> GetRecordByFilterAsync(Expression<Func<UserContact, bool>> filter)
+    {
+        return await _dbContext.UserContacts.AsQueryable().FirstOrDefaultAsync(filter);
     }
 }

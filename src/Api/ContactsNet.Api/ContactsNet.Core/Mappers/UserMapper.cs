@@ -17,9 +17,11 @@ public partial class UserMapper
     {
         user.Name = userDto.Name;
         user.Surname = userDto.Surname;
-        user.Email = userDto.Email;
-        user.PhoneNumber = userDto.PhoneNumber;
         user.BirthDateTime = userDto.BirthDateTime;
+        user.PhoneNumber = userDto.PhoneNumber;
+        user.Email = userDto.Email;
         return user;
+        
     }
+
 }

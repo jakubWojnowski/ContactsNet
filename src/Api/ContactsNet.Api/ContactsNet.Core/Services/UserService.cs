@@ -15,17 +15,19 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher<User> _passwordHasher;
     private readonly IValidator<RegisterUserDto> _registerValidator;
+    private readonly IValidator<UserDto> _userValidator;
     private readonly IValidator<LoginUserDto> _loginValidator;
     private readonly IJwtProvider _jwtProvider;
     private static readonly UserMapper Mapper = new();
 
     public UserService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher,
-        IValidator<RegisterUserDto> registerValidator,
+        IValidator<RegisterUserDto> registerValidator, IValidator<UserDto> userValidator,
         IValidator<LoginUserDto> loginValidator, IJwtProvider jwtProvider)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
         _registerValidator = registerValidator;
+        _userValidator = userValidator;
         _loginValidator = loginValidator;
         _jwtProvider = jwtProvider;
     }
@@ -36,7 +38,7 @@ public class UserService : IUserService
         if (!validationResult.IsValid)
         {
             var errorMessage = string.Join(" ", validationResult.Errors.Select(e => e.ErrorMessage));
-            throw new Exception(errorMessage);
+            throw new CustomValidationException(errorMessage);
         }
 
         var user = Mapper.MapRegistrationDtoToUser(dto);
@@ -51,7 +53,7 @@ public class UserService : IUserService
         if (!validationResult.IsValid)
         {
             var errorMessage = string.Join(" ", validationResult.Errors.Select(e => e.ErrorMessage));
-            throw new LoggerException(errorMessage);
+            throw new CustomValidationException(errorMessage);
         }
 
         var user = await _userRepository.GetRecordByFilterAsync(u => u.Email == dto.Email, cancellationToken);
@@ -88,6 +90,12 @@ public class UserService : IUserService
         if (user == null)
         {
             throw new UserNotFoundException("User not found");
+        }
+        var validationResult = await _userValidator.ValidateAsync(userDto, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            var errorMessage = string.Join(" ", validationResult.Errors.Select(e => e.ErrorMessage));
+            throw new CustomValidationException(errorMessage);
         }
 
         var updatedUser = Mapper.MapAndUpdateUserFromUserDto(userDto, user);

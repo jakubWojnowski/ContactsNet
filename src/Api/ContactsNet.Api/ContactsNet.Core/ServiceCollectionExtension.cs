@@ -86,6 +86,7 @@ internal static class ServiceCollectionExtension
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddTransient<IValidator<RegisterUserDto>, RegisterUserValidator>();
         services.AddTransient<IValidator<LoginUserDto>, LoginUserValidator>();
+        services.AddTransient<IValidator<UserDto>, UpdateUserValidator>();
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddControllers();
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
