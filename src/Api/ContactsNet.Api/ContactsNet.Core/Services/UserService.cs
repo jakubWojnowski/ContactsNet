@@ -19,7 +19,8 @@ public class UserService : IUserService
     private readonly IJwtProvider _jwtProvider;
     private static readonly UserMapper Mapper = new();
 
-    public UserService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher, IValidator<RegisterUserDto> registerValidator,
+    public UserService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher,
+        IValidator<RegisterUserDto> registerValidator,
         IValidator<LoginUserDto> loginValidator, IJwtProvider jwtProvider)
     {
         _userRepository = userRepository;
@@ -28,7 +29,7 @@ public class UserService : IUserService
         _loginValidator = loginValidator;
         _jwtProvider = jwtProvider;
     }
-    
+
     public async Task RegisterUserAsync(RegisterUserDto dto, CancellationToken cancellationToken)
     {
         var validationResult = await _registerValidator.ValidateAsync(dto, cancellationToken);
@@ -37,14 +38,14 @@ public class UserService : IUserService
             var errorMessage = string.Join(" ", validationResult.Errors.Select(e => e.ErrorMessage));
             throw new Exception(errorMessage);
         }
+
         var user = Mapper.MapRegistrationDtoToUser(dto);
         var encoded = _passwordHasher.HashPassword(user, dto.Password);
         user.EncodedPassword = encoded;
         await _userRepository.AddAsync(user, cancellationToken);
-        
     }
-    
-    public async Task<UserDto> LoginUserAsync(LoginUserDto dto, CancellationToken cancellationToken)
+
+    public async Task<UserDetailsDto> LoginUserAsync(LoginUserDto dto, CancellationToken cancellationToken)
     {
         var validationResult = await _loginValidator.ValidateAsync(dto, cancellationToken);
         if (!validationResult.IsValid)
@@ -52,17 +53,57 @@ public class UserService : IUserService
             var errorMessage = string.Join(" ", validationResult.Errors.Select(e => e.ErrorMessage));
             throw new LoggerException(errorMessage);
         }
+
         var user = await _userRepository.GetRecordByFilterAsync(u => u.Email == dto.Email, cancellationToken);
         if (user == null)
         {
             throw new UserNotFoundException("There is no account for that email");
         }
-        var userDto = Mapper.MapUserToUserDto(user);
+
+        var userDto = Mapper.MapUserToUserDetailsDto(user);
         userDto.Token = _jwtProvider.GenerateJwtToken(user);
         return userDto;
-        
-        
-        
     }
 
+    public async Task<IEnumerable<UserDto>> GetAllUsersAsync(CancellationToken cancellationToken)
+    {
+        var users = await _userRepository.GetAllAsync(cancellationToken);
+        return Mapper.MapUsersToUserDtos(users);
+    }
+    
+    public async Task<UserDto> GetUserByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var user = await _userRepository.GetAsync(id, cancellationToken);
+        if (user == null)
+        {
+            throw new UserNotFoundException("User not found");
+        }
+
+        return Mapper.MapUserToUserDto(user);
+    }
+    
+    public async Task UpdateUserAsync(Guid id, UserDto userDto, CancellationToken cancellationToken)
+    {
+        var user = await _userRepository.GetAsync(id, cancellationToken);
+        if (user == null)
+        {
+            throw new UserNotFoundException("User not found");
+        }
+
+        var updatedUser = Mapper.MapAndUpdateUserFromUserDto(userDto, user);
+        await _userRepository.UpdateAsync(updatedUser, cancellationToken);
+    }
+    
+    public async Task DeleteUserAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var user = await _userRepository.GetAsync(id, cancellationToken);
+        if (user == null)
+        {
+            throw new UserNotFoundException("User not found");
+        }
+
+        await _userRepository.DeleteAsync(user, cancellationToken);
+    }
+    
+    
 }

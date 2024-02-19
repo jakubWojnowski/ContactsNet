@@ -14,14 +14,13 @@ internal class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public async Task<User?> GetAsync(Guid id)
+    public async Task<User?> GetAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _dbContext.Users.FindAsync(id);
+        return await _dbContext.Users.FindAsync(new object?[] { id }, cancellationToken: cancellationToken);
     }
-
-    public async Task<IList<User?>> GetAllAsync()
+    public async Task<IList<User?>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await _dbContext.Users.AsQueryable().ToListAsync();
+        return await _dbContext.Users.AsQueryable().ToListAsync(cancellationToken: cancellationToken);
     }
     
     public async Task<Guid> AddAsync(User user, CancellationToken cancellationToken)

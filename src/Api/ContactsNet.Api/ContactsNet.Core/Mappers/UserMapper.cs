@@ -3,13 +3,23 @@ using ContactsNet.Core.Dto;
 using Riok.Mapperly.Abstractions;
 
 namespace ContactsNet.Core.Mappers;
+
 [Mapper]
 public partial class UserMapper
 {
     public partial User MapRegistrationDtoToUser(RegisterUserDto registerUserDto);
     public partial UserDto MapUserToUserDto(User user);
-    
-    public partial IReadOnlyCollection<UserDto> MapUsersToUserDtos(IEnumerable<User> users);
-    
-    
+    public partial UserDetailsDto MapUserToUserDetailsDto(User user);
+
+    public partial IReadOnlyCollection<UserDto> MapUsersToUserDtos(IList<User?> users);
+
+    public User MapAndUpdateUserFromUserDto(UserDto userDto, User user)
+    {
+        user.Name = userDto.Name;
+        user.Surname = userDto.Surname;
+        user.Email = userDto.Email;
+        user.PhoneNumber = userDto.PhoneNumber;
+        user.BirthDateTime = userDto.BirthDateTime;
+        return user;
+    }
 }

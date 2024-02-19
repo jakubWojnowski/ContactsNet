@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ContactsNet.Api.Controllers;
 
-[Authorize]
 [ApiController]
-
+[Route("api/[controller]")]
 public class BaseController : ControllerBase
 {
 

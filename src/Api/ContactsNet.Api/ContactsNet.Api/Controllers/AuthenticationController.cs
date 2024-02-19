@@ -15,7 +15,7 @@ public class AuthenticationController : BaseController
     }
     
     [HttpPost("login")]
-    public async Task<ActionResult> Login([FromBody] LoginUserDto dto, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> Login( LoginUserDto dto, CancellationToken cancellationToken = default)
     {
         var token = await _userService.LoginUserAsync(dto, cancellationToken);
         return Ok(token);
@@ -23,7 +23,7 @@ public class AuthenticationController : BaseController
     
 
     [HttpPost("register")]
-    public async Task<ActionResult> Register([FromBody] RegisterUserDto dto, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> Register( RegisterUserDto dto, CancellationToken cancellationToken = default)
     {
         await _userService.RegisterUserAsync(dto, cancellationToken);
         return Ok();

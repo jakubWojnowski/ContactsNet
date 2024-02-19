@@ -12,6 +12,7 @@ using ContactsNet.Core.Validations.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,7 +35,7 @@ internal static class ServiceCollectionExtension
             {
                 x.WithOrigins("http://localhost:3000")
                     .WithMethods("POST","GET", "PUT", "DELETE", "PATCH")
-                    // .WithHeaders("Content-Type", "Authorization")
+                    .WithHeaders("Content-Type", "Authorization")
                     .AllowAnyHeader()
                     .AllowCredentials()
                     .WithExposedHeaders("Location");
@@ -73,7 +74,7 @@ internal static class ServiceCollectionExtension
                 }
             });
         });
-        services.AddHttpContextAccessor();
+  
         services.AddErrorHandling();
         services.AddMsSql();
         services.AddMsSql<ContactsNetDbContext>();
@@ -87,9 +88,8 @@ internal static class ServiceCollectionExtension
         services.AddTransient<IValidator<LoginUserDto>, LoginUserValidator>();
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddControllers();
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-        // services.AddValidatorsFromAssemblyContaining(typeof(RegisterUserValidator));
-        // services.AddValidatorsFromAssemblyContaining(typeof(LoginUserValidator));
         return services;
     }
 
