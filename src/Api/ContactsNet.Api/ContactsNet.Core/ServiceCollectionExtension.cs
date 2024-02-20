@@ -7,6 +7,7 @@ using ContactsNet.Core.Dal.Persistence;
 using ContactsNet.Core.Dal.Repositories;
 using ContactsNet.Core.Dto;
 using ContactsNet.Core.Middlewares;
+using ContactsNet.Core.Policies;
 using ContactsNet.Core.Services;
 using ContactsNet.Core.Validations.Validators;
 using FluentValidation;
@@ -88,6 +89,9 @@ internal static class ServiceCollectionExtension
         services.AddTransient<IValidator<LoginUserDto>, LoginUserValidator>();
         services.AddTransient<IValidator<UserDto>, UpdateUserValidator>();
         services.AddScoped<IJwtProvider, JwtProvider>();
+        services.AddScoped<IUserContactService, UserContactService>();
+       services.AddScoped<ICannotOperateOnContact, CannotOperateOnContact>();
+       services.AddScoped<ICannotAddContact, CannotAddContact>();
         services.AddControllers();
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

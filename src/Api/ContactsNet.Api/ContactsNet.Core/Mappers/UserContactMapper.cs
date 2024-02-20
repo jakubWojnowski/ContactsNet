@@ -9,7 +9,7 @@ public partial class UserContactMapper
     
     public partial UserContact MapUserContactDtoToUserContact(UserContactDto userContactDto);
     public partial UserContactDto MapUserContactToUserContactDto(UserContact userContact);
-    public partial IReadOnlyCollection<UserContactDto> MapUserContactsToUserContactDtos(IList<UserContact?> userContacts);
+    public partial IReadOnlyCollection<UserContactDto> MapUserContactsToUserContactDtos(List<UserContact> userContacts);
 
     public  UserContact MapAndUpdateUserContactFromUserContactDto(UserContactDto userContactDto,
         UserContact userContact)
