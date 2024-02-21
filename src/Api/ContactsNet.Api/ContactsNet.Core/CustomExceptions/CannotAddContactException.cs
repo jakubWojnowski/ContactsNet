@@ -3,4 +3,4 @@
 namespace ContactsNet.Core.CustomExceptions;
 
 public class CannotAddContactException(string email)
-    : ContactsNetException($"Contact with email {email} already exists");
+    : ContactsNetException($"Cannot add contact with email {email} because it is  user's email.");

@@ -2,5 +2,5 @@
 
 public interface ICannotAddContact
 {
-    Task<bool> CheckIfContactExists(Guid userId, string email, CancellationToken cancellationToken = default);
+    Task<bool> CheckIfEmailIsNotUsers(Guid userId, string email, CancellationToken cancellationToken = default);
 }

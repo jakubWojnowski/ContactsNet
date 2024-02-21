@@ -4,16 +4,18 @@ namespace ContactsNet.Core.Policies;
 
 public class CannotAddContact : ICannotAddContact
 {
-    private readonly IUserContactRepository _userContactRepository;
+    private readonly IUserRepository _userRepository;
 
-    public CannotAddContact(IUserContactRepository userContactRepository)
+    public CannotAddContact(IUserRepository userRepository)
     {
-        _userContactRepository = userContactRepository;
+        _userRepository = userRepository;
     }
-  
-    public async Task<bool> CheckIfContactExists(Guid userId, string email, CancellationToken cancellationToken = default)
+
+    public async Task<bool> CheckIfEmailIsNotUsers(Guid userId, string email,
+        CancellationToken cancellationToken = default)
     {
-        var userContacts = await _userContactRepository.GetRecordByFilterAsync(u => u.UserId == userId && u.Email == email, cancellationToken);
-        return userContacts is not null;
+        var user = await _userRepository.GetAsync(userId, cancellationToken);
+
+        return user?.Email == email;
     }
 }

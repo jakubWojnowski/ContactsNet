@@ -35,7 +35,7 @@ internal static class ServiceCollectionExtension
             cors.AddPolicy(CorsPolicy, x =>
             {
                 x.WithOrigins("http://localhost:3000")
-                    .WithMethods("POST","GET", "PUT", "DELETE", "PATCH")
+                    .WithMethods("POST", "GET", "PUT", "DELETE", "PATCH")
                     .WithHeaders("Content-Type", "Authorization")
                     .AllowAnyHeader()
                     .AllowCredentials()
@@ -75,7 +75,7 @@ internal static class ServiceCollectionExtension
                 }
             });
         });
-  
+
         services.AddErrorHandling();
         services.AddMsSql();
         services.AddMsSql<ContactsNetDbContext>();
@@ -83,15 +83,16 @@ internal static class ServiceCollectionExtension
         services.AddScoped<IContext, Context>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserContactRepository, UserContactRepository>();
-        services.AddScoped<IUserService , UserService>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddTransient<IValidator<RegisterUserDto>, RegisterUserValidator>();
         services.AddTransient<IValidator<LoginUserDto>, LoginUserValidator>();
+        services.AddTransient<IValidator<UserContactDto>, UserContactDtoValidator>();
         services.AddTransient<IValidator<UserDto>, UpdateUserValidator>();
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IUserContactService, UserContactService>();
-       services.AddScoped<ICannotOperateOnContact, CannotOperateOnContact>();
-       services.AddScoped<ICannotAddContact, CannotAddContact>();
+        services.AddScoped<ICannotOperateOnContact, CannotOperateOnContact>();
+        services.AddScoped<ICannotAddContact, CannotAddContact>();
         services.AddControllers();
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
