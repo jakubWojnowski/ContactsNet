@@ -1,5 +1,6 @@
 ﻿import {RouteObject, createBrowserRouter, Navigate} from 'react-router-dom';
 import App from "../../App.tsx";
+import ProfilePage from "../../Feautures/Profile/ProfilePage.tsx";
 
 
 export const Routes: RouteObject[] = [

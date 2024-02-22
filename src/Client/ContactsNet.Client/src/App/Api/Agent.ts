@@ -2,6 +2,9 @@
 import {router} from "../Router/Routes.tsx";
 import {toast} from "react-toastify";
 import {store} from "../Stores/Store.ts";
+import {RegisterForm} from "../Models/RegisterForm.ts";
+import {User} from "../Models/User.ts";
+import {LoginForm} from "../Models/LoginForm.ts";
 
 const sleep = (delay: number) => {
     return new Promise((resolve) => {
@@ -65,10 +68,14 @@ const requests = {
 };
 
 const Authentication = {
-    login: <T>(user: {}) => requests.post<T>('/api/Authentication/login', user),
-    register: <T>(user: {}) => requests.post<T>('/api/Authentication/register', user)
+    login: (user: LoginForm) => requests.post<User>('/api/Authentication/login', user),
+    register: (user: RegisterForm) => requests.post<User>('/api/Authentication/register', user)
 };
-const User = {
+const Contacts = {
 
 };
 
+export default {
+    Authentication,
+    Contacts
+};
